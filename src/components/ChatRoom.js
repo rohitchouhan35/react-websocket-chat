@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router';
 import { over } from "stompjs";
 import SockJS from "sockjs-client";
 
 var stompClient = null;
 const ChatRoom = () => {
+  const navigate = useNavigate();
+
+  const allowedUsers = ["sid", "mayur"];
+
   const [privateChats, setPrivateChats] = useState(new Map());
   const [publicChats, setPublicChats] = useState([]);
-  const [tab, setTab] = useState("CHATROOM");
+  const [tab, setTab] = useState("CHATROOM"); 
   const [userData, setUserData] = useState({
     username: "",
     receivername: "",
@@ -15,7 +20,10 @@ const ChatRoom = () => {
   });
   useEffect(() => {
     console.log(userData);
-  }, [userData]);
+    if(!userData.connected) {
+      navigate("/login");
+    }
+  }, [userData, navigate]);
 
   const connect = () => {
     console.log("connect executing...");
@@ -141,9 +149,11 @@ const ChatRoom = () => {
                 }}
                 className={`member ${tab === "CHATROOM" && "active"}`}
               >
-                Chatroom
+                Law-Faction
               </li>
-              {[...privateChats.keys()].map((name, index) => (
+              {[...privateChats.keys()]
+                .filter((name) => allowedUsers.includes(name))
+                .map((name, index) => (
                 <li
                   onClick={() => {
                     setTab(name);
