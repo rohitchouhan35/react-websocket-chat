@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import './Login.css';
+import { useStateContext } from './contexts/ContextProvider';
 
 const Login = () => {
+
+  const navigate = useNavigate();
+  
+  const {
+    setIsLoggedIn,
+    userData,
+    setUserData
+  } = useStateContext();
+
+
   const [cred, setCred] = useState({
     username: '',
     password: '',
@@ -14,7 +26,10 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setUserData({ ...userData, username: cred.username });
     console.log(cred)
+    setIsLoggedIn(true);
+    navigate("/");
   };
 
   return (
